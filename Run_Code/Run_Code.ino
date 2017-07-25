@@ -3,7 +3,7 @@
 
 unsigned long count;
 uint8_t sensor[5];
-char Case[6];
+char Case;
 
 
 void delay_ms (uint16_t millisecond) {
@@ -123,44 +123,44 @@ void loop() {
 
 // Classify cases using if statement by examing each element of array sensor 
     if (sensor[0] == sensor[1] == sensor[3] == sensor [4] == 0 && sensor [2] == 1){
-      Case = "Forwd";
+      Case = 'S'; // Straight
     }
     
     if (sensor[0] == sensor[1] == 0 && sensor [2] == sensor[3] == sensor [4] == 1){
-      Case = "TurnR";
+      Case = 'R'; // Turn Right
     }
     
     if (sensor[3] == sensor[4] == 0 && sensor [0] == sensor[1] == sensor [2] == 1){
-      Case = "TurnL";
+      Case = 'L'; // Turn Left 
     }
     
     if (sensor[0] == sensor[1] == sensor[2] == sensor [3] == sensor [4] == 0){
-      Case = "DeadE";
+      Case = 'D'; // Dead End 
     }
     
     if (sensor[0] == sensor[1] == sensor[2] == sensor [3] == sensor [4] == 1){
-      Case = "Donee";
+      Case = 'F'; // Finish
     }
 
 // Using switch statement to execute command
     switch (Case){
-      case "Forwd":
+      case 'S':
         Forward ();
         Serial.println ("Straight");
         break;
-      case "TurnR":
+      case 'R':
         TurnRight ();
         Serial.println ("TurnRight");
         break;
-      case "TurnL":
+      case 'L':
         TurnLeft ();
         Serial.println ("TurnLeft");
         break;
-      case "DeadE":
+      case 'D':
         TurnRight ();
         Serial.println ("DeadEnd");
         break;
-      case "Donee":
+      case 'F':
         Stop ();
         Serial.println ("Finish");
         break;
