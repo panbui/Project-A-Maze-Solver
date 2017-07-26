@@ -55,6 +55,8 @@ void setup() {
 
 void loop() {
 // BASIC MOVING FUNCTION AND PWM TESTING
+//  Forward ();
+//  delay_ms (1000);
 //  Backward ();
 //  delay_ms (1000);
 //  TurnLeft ();
@@ -109,60 +111,74 @@ void loop() {
     }else{
       sensor[4] = 0;}
 
-// Print in the serial monitor 
-//Serial.print (sensor[0]);
-//Serial.print ("   ");
-//Serial.print (sensor[1]);
-//Serial.print ("   ");
-//Serial.print (sensor[2]);
-//Serial.print ("   ");
-//Serial.print (sensor[3]);
-//Serial.print ("   ");
-//Serial.print (sensor[4]);
-//Serial.println ("   ");
-
 // Classify cases using if statement by examing each element of array sensor 
-    if (sensor[0] == sensor[1] == sensor[3] == sensor [4] == 0 && sensor [2] == 1){
-      Case = 'S'; // Straight
+    if (sensor[2] ==1 && sensor[0]==0 && sensor[1]==0 && sensor[3]==0 && sensor[4]==0){
+      Case = 'S'; // Straight 00100
+      Serial.println ("Straight");
     }
     
-    if (sensor[0] == sensor[1] == 0 && sensor [2] == sensor[3] == sensor [4] == 1){
-      Case = 'R'; // Turn Right
+    else if (sensor[0] ==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==1){
+      Case = 'R'; // Turn Right 00111
+      Serial.println ("Right");
     }
     
-    if (sensor[3] == sensor[4] == 0 && sensor [0] == sensor[1] == sensor [2] == 1){
-      Case = 'L'; // Turn Left 
+    else if (sensor[0] ==1 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0){
+      Case = 'L'; // Turn Left 11100
+      Serial.println ("Left");
     }
     
-    if (sensor[0] == sensor[1] == sensor[2] == sensor [3] == sensor [4] == 0){
-      Case = 'D'; // Dead End 
+    else if (sensor[0] ==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0){
+      Case = 'D'; // Dead End 00000
+      Serial.println ("DeadEnd");
     }
     
-    if (sensor[0] == sensor[1] == sensor[2] == sensor [3] == sensor [4] == 1){
-      Case = 'F'; // Finish
+    else if(sensor[0] ==1 && sensor[1]==1 && sensor[2]==1 && sensor[3]==1 && sensor[4]==1){
+      Case = 's'; // Finish 11111
+      Serial.println ("Finish");
     }
+
+    else{
+       Case = 's';
+       Serial.println ("Errors");
+    }
+
+ //Print in the serial monitor 
+Serial.print (sensor[0]);
+Serial.print ("   ");
+Serial.print (sensor[1]);
+Serial.print ("   ");
+Serial.print (sensor[2]);
+Serial.print ("   ");
+Serial.print (sensor[3]);
+Serial.print ("   ");
+Serial.print (sensor[4]);
+Serial.print ("   ");
 
 // Using switch statement to execute command
     switch (Case){
       case 'S':
         Forward ();
-        Serial.println ("Straight");
+        //Serial.println ("Straight");
         break;
       case 'R':
         TurnRight ();
-        Serial.println ("TurnRight");
+       // Serial.println ("TurnRight");
         break;
       case 'L':
         TurnLeft ();
-        Serial.println ("TurnLeft");
+       // Serial.println ("TurnLeft");
         break;
       case 'D':
         TurnRight ();
-        Serial.println ("DeadEnd");
+      //  Serial.println ("DeadEnd");
         break;
-      case 'F':
+      case 's':
         Stop ();
-        Serial.println ("Finish");
+      //  Serial.println ("Finish");
+        break;
+      default:
+        Stop ();
+        Serial.println ("Errors");
         break;
     }
 
