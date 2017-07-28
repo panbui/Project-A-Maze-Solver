@@ -112,36 +112,89 @@ void loop() {
       sensor[4] = 0;}
 
 // Classify cases using if statement by examing each element of array sensor 
-    if (sensor[2] ==1 && sensor[0]==0 && sensor[1]==0 && sensor[3]==0 && sensor[4]==0){
+//     if (sensor[2] ==1 && sensor[0]==0 && sensor[1]==0 && sensor[3]==0 && sensor[4]==0){
+//       Case = 'S'; // Straight 00100
+//       Serial.println ("Straight");
+//     }
+    
+//     else if (sensor[0] ==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==1){
+//       Case = 'R'; // Turn Right 00111
+//       Serial.println ("Right");
+//     }
+    
+//     else if (sensor[0] ==1 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0){
+//       Case = 'L'; // Turn Left 11100
+//       Serial.println ("Left");
+//     }
+    
+//     else if (sensor[0] ==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0){
+//       Case = 'D'; // Dead End 00000
+//       Serial.println ("DeadEnd");
+//     }
+    
+//     else if(sensor[0] ==1 && sensor[1]==1 && sensor[2]==1 && sensor[3]==1 && sensor[4]==1){
+//       Case = 's'; // Finish 11111
+//       Serial.println ("Finish");
+//     }
+
+//     else{
+//        Case = 's';
+//        Serial.println ("Errors");
+//     }
+
+// STRAIGHT
+    if (sensor[2]==1 && sensor[0]==0 && sensor[1]==0 && sensor[3]==0 && sensor[4]==0) {
       Case = 'S'; // Straight 00100
       Serial.println ("Straight");
     }
-    
-    else if (sensor[0] ==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==1){
+// CALIBRATE RIGHT
+    else if ((sensor[0]==0 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
+          || (sensor[0]==0 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0)
+          || (sensor[0]==1 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
+          || (sensor[0]==1 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)) {
+      Case = 'r'; 
+      Serial.println("Calibrate right");
+    }
+
+// TURN RIGHT
+    else if (sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==1){
       Case = 'R'; // Turn Right 00111
       Serial.println ("Right");
     }
-    
-    else if (sensor[0] ==1 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0){
+
+// CALIBRATE LEFT
+    else if ((sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==1 && sensor[4]==0)
+          || (sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==0)
+          || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==1 && sensor[4]==1)
+          || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==1)) {
+      Case = 'l';
+      Serial.println("Calibrate left");
+    }
+
+// TURN LEFT
+    else if (sensor[0]==1 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0){
       Case = 'L'; // Turn Left 11100
       Serial.println ("Left");
     }
-    
-    else if (sensor[0] ==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0){
+
+// DEADEND
+    else if (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0){
       Case = 'D'; // Dead End 00000
       Serial.println ("DeadEnd");
     }
-    
-    else if(sensor[0] ==1 && sensor[1]==1 && sensor[2]==1 && sensor[3]==1 && sensor[4]==1){
+
+// FINISH
+    else if(sensor[0]==1 && sensor[1]==1 && sensor[2]==1 && sensor[3]==1 && sensor[4]==1){
       Case = 's'; // Finish 11111
       Serial.println ("Finish");
     }
 
+// OTHERS
     else{
        Case = 's';
        Serial.println ("Errors");
     }
-
+  
  //Print in the serial monitor 
 Serial.print (sensor[0]);
 Serial.print ("   ");
