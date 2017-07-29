@@ -44,62 +44,53 @@ void TurnRight (){
   PORTB = 0b00001001;
 }
 
-void setup() {
-//  DDRD |= (1<<5) | (1<<6);
-  Serial.begin (115200);
-  DDRD = 0b01100000;
-  DDRB = 0b00001111;
-  DDRC = 0b00000000;
-  PORTD = 0b01100000;
+void TestCodeMotor (){
+  // BASIC MOVING FUNCTION AND PWM TESTING
+  Forward ();
+  Serial.println ("Forward");
+  delay_ms (5000);
+  
+  Backward ();
+  Serial.println ("Backward");
+  delay_ms (1000);
+  
+  TurnLeft ();
+  Serial.println ("Left");
+  delay_ms (300);
+
+  Forward ();
+  Serial.println ("Forward");
+  delay_ms (5000);
+  
+  TurnRight ();
+  Serial.println ("Right");
+  delay_ms (300);
+
+  Forward ();
+  Serial.println ("Forward");
+  delay_ms (5000);
+  
+  Stop ();
+  Serial.println ("Stop");
+  delay_ms (1000);
+
+  for (int a = 0; a <= 255; a+=5){
+    setPWM_leftmotor (a);
+    Forward ();
+    Serial.println ("PWM Left");
+    delay_ms (100);
+  }
+
+  for (int a = 0; a <= 255; a+=5){
+    setPWM_rightmotor (a);
+    Backward ();
+    Serial.println ("PWM Right");
+    delay_ms (100);
+  }
 }
 
-void loop() {
-// BASIC MOVING FUNCTION AND PWM TESTING
-//  Forward ();
-//  Serial.println ("Forward");
-//  delay_ms (5000);
-//  
-//  Backward ();
-//  Serial.println ("Backward");
-//  delay_ms (1000);
-//  
-//  TurnLeft ();
-//  Serial.println ("Left");
-//  delay_ms (300);
-//
-//  Forward ();
-//  Serial.println ("Forward");
-//  delay_ms (5000);
-//  
-//  TurnRight ();
-//  Serial.println ("Right");
-//  delay_ms (300);
-//
-//  Forward ();
-//  Serial.println ("Forward");
-//  delay_ms (5000);
-//  
-//  Stop ();
-//  Serial.println ("Stop");
-//  delay_ms (1000);
-//
-//  for (int a = 0; a <= 255; a+=5){
-//    setPWM_leftmotor (a);
-//    Forward ();
-//    Serial.println ("PWM Left");
-//    delay_ms (100);
-//  }
-//
-//  for (int a = 0; a <= 255; a+=5){
-//    setPWM_rightmotor (a);
-//    Backward ();
-//    Serial.println ("PWM Right");
-//    delay_ms (100);
-//  }
-
-// INTEGRATE SENSORS AND MOTOR 
-
-// Sensor 0
+void ReadSensors (){
+  // Sensor 0
     if (PINC & (1<<0)){
       sensor[0] = 1;
     }else{
@@ -130,8 +121,22 @@ void loop() {
     }else{
       sensor[4] = 0;}
 
-// Classify cases using if statement by examing each element of array sensor 
-// STRAIGHT
+     //Print in the serial monitor 
+    Serial.print (sensor[0]);
+    Serial.print ("   ");
+    Serial.print (sensor[1]);
+    Serial.print ("   ");
+    Serial.print (sensor[2]);
+    Serial.print ("   ");
+    Serial.print (sensor[3]);
+    Serial.print ("   ");
+    Serial.print (sensor[4]);
+    Serial.print ("   ");
+}
+
+void SensorsCondition (){
+    ReadSensors ();
+  // STRAIGHT
     if (sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0) {
       Case = 'S'; // Straight 00100
       //Serial.println ("Straight");
@@ -187,21 +192,11 @@ void loop() {
        Case = 'O';
        //Serial.println ("Errors");
     }
-  
- //Print in the serial monitor 
-Serial.print (sensor[0]);
-Serial.print ("   ");
-Serial.print (sensor[1]);
-Serial.print ("   ");
-Serial.print (sensor[2]);
-Serial.print ("   ");
-Serial.print (sensor[3]);
-Serial.print ("   ");
-Serial.print (sensor[4]);
-Serial.print ("   ");
+}
 
-// Using switch statement to execute command
-    switch (Case){
+void RunCase (){
+   SensorsCondition ();
+   switch (Case){
       
       case 'S': // Straight
         setPWM_leftmotor (255);
@@ -257,6 +252,20 @@ Serial.print ("   ");
         Serial.println ("Errors");
         break;
     }
+}
+
+void setup() {
+//  DDRD |= (1<<5) | (1<<6);
+  Serial.begin (115200);
+  DDRD = 0b01100000;
+  DDRB = 0b00001111;
+  DDRC = 0b00000000;
+  PORTD = 0b01100000;
+}
+
+void loop() {
+    //TestCodeMotor ();
+     RunCase ();  
 }
 
 
