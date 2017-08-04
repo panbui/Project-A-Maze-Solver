@@ -9,7 +9,7 @@ float activeSensor = 0; // Count active sensors
 float totalSensor = 0; // Total sensor readings
 float avgSensor = 1.5; // Average sensor reading
 
-float Kp = 102;
+float Kp = 66;
 float Ki = 0.05;
 float Kd = 2;
 
@@ -151,18 +151,28 @@ void ReadSensors (){
 void SensorsCondition (){
     ReadSensors ();
   // STRAIGHT
-    if (sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0) {
+    if ((sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0) 
+    || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==1 && sensor[4]==0)
+    || (sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==0)
+    || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==1 && sensor[4]==1)
+    || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==1)
+    || (sensor[0]==0 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
+    || (sensor[0]==0 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0)
+    || (sensor[0]==1 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
+    || (sensor[0]==1 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)) {
+    
+    
       Case = 'S'; // Straight 00100
       //Serial.println ("Straight");
     }
 // CALIBRATE RIGHT
-    else if ((sensor[0]==0 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
-          || (sensor[0]==0 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0)
-          || (sensor[0]==1 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
-          || (sensor[0]==1 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)) {
-      Case = 'r'; 
-      //Serial.println("Calibrate right");
-    }
+//    else if ((sensor[0]==0 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
+//          || (sensor[0]==0 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0)
+//          || (sensor[0]==1 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
+//          || (sensor[0]==1 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)) {
+//      Case = 'r'; 
+//      //Serial.println("Calibrate right");
+//    }
 
 // TURN RIGHT
 //    else if ((sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==1)
@@ -173,13 +183,13 @@ void SensorsCondition (){
 //    }
 
 // CALIBRATE LEFT
-    else if ((sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==1 && sensor[4]==0)
-          || (sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==0)
-          || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==1 && sensor[4]==1)
-          || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==1)) {
-      Case = 'l';
-      //Serial.println("Calibrate left");
-    }
+//    else if ((sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==1 && sensor[4]==0)
+//          || (sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==0)
+//          || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==1 && sensor[4]==1)
+//          || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==1)) {
+//      Case = 'l';
+//      //Serial.println("Calibrate left");
+//    }
 
 // TURN LEFT
 //    else if ((sensor[0]==1 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0)
@@ -207,8 +217,6 @@ void RunCase (){
    switch (Case){
       
       case 'S': // Straight
-        setPWM_leftmotor (255);
-        setPWM_rightmotor (255);
         Forward ();
         PID_program();
         Serial.println ("Straight");
@@ -221,10 +229,11 @@ void RunCase (){
 //        Serial.println ("TurnRight");
 //        break;
         
-      case 'r': // Cali right
-        Serial.println ("Cali right");
-        PID_program();
-        break;
+//      case 'r': // Cali right
+//        Serial.println ("Cali right");
+//        Forward();
+//        PID_program();
+//        break;
         
 //      case 'L': // Left 
 //        setPWM_leftmotor (255);
@@ -233,10 +242,11 @@ void RunCase (){
 //        Serial.println ("TurnLeft");
 //        break;
 
-      case 'l': // Cali left 
-        Serial.println ("Cali left");
-        PID_program();
-        break;
+//      case 'l': // Cali left 
+//        Serial.println ("Cali left");
+//        Forward();
+//        PID_program();
+//        break;
         
       case 'D': // Deadend 
         setPWM_leftmotor (255);
@@ -269,15 +279,14 @@ void setup() {
 
 void loop() {
     //TestCodeMotor ();
-    //RunCase ();  
-    Forward ();
-    PID_program ();
+    RunCase ();  
 }
 void PID_program()
 { 
     Error();
     
     previousError = error; // save previous error for differential 
+ 
     totalError += error; // Accumulate error for integral
     
     power = (Kp*error) + (Kd*(error-previousError)) + (Ki*totalError);
@@ -287,28 +296,27 @@ void PID_program()
     
     if(power<0) // Turn left
     {
-      setPWM_rightmotor(180);
+      setPWM_rightmotor(200);
       setPWM_leftmotor(190 - abs(int(power)));
     }
     
     else // Turn right
     {
-      setPWM_rightmotor(180 - int(power));
+      setPWM_rightmotor(200 - int(power));
       setPWM_leftmotor(190);
     }
    
 }
 void Error() {
-  for(int i=1; i<=3; i++) 
+  for(int i=0; i<=4; i++) 
     {
       if(sensor[i]==1) {
         activeSensor+=1; 
         }
-      totalSensor += sensor[i] * (i);
+      totalSensor += sensor[i] * (i+1);
     }
       
     avgSensor = totalSensor/activeSensor;
-    error = (avgSensor - 2);
+    error = (avgSensor - 3);
     activeSensor = 0; totalSensor = 0;
 }
-
