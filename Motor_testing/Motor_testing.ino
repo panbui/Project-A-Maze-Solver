@@ -1,3 +1,4 @@
+
 #include <Arduino.h>
 #include <avr/io.h>
 
@@ -14,6 +15,7 @@ float Ki = 0.05;
 float Kd = 2;
 
 float error = 0;
+int *er_pt = &error;      // error pointer
 float previousError = 0;
 float totalError = 0;
 
@@ -27,14 +29,10 @@ void delay_ms (uint16_t millisecond) {
 }
 
 void setPWM_leftmotor (uint8_t PWM6){
-  TCCR0A = 0b10000011;
-  TCCR0B = 0b00000001;
   OCR0A = PWM6;
 }
 
 void setPWM_rightmotor (uint8_t PWM5){
-  TCCR0A = 0b00100011;
-  TCCR0B = 0b00000001;
   OCR0B = PWM5;
 }
  
@@ -271,6 +269,8 @@ void RunCase (){
 void setup() {
 //  DDRD |= (1<<5) | (1<<6);
   Serial.begin (115200);
+  TCCR0A = 0b10100011;
+  TCCR0B = 0b00000001;
   DDRD = 0b01100000;
   DDRB = 0b00001111;
   DDRC = 0b00000000;
@@ -283,7 +283,7 @@ void loop() {
 }
 void PID_program()
 { 
-    Error();
+    Error(er_pt);
     
     previousError = error; // save previous error for differential 
  
@@ -307,7 +307,7 @@ void PID_program()
     }
    
 }
-void Error() {
+void Error(int *error) {
   for(int i=0; i<=4; i++) 
     {
       if(sensor[i]==1) {
@@ -317,6 +317,6 @@ void Error() {
     }
       
     avgSensor = totalSensor/activeSensor;
-    error = (avgSensor - 3);
+    *error = (avgSensor - 3);
     activeSensor = 0; totalSensor = 0;
 }
