@@ -1,4 +1,3 @@
-
 #include <Arduino.h>
 #include <avr/io.h>
 
@@ -15,7 +14,7 @@ float Ki = 0.05;
 float Kd = 2;
 
 float error = 0;
-int *er_pt = &error;      // error pointer
+float *er_pt = &error;      // error pointer
 float previousError = 0;
 float totalError = 0;
 
@@ -230,7 +229,7 @@ void RunCase (){
         Forward();
         delay_ms(200);
 
-        readSensor();
+        ReadSensors();
         // TURN RIGHT
         if (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0) {
           setPWM_leftmotor (255);
@@ -292,7 +291,7 @@ void RunCase (){
         delay_ms(200);
         Stop ();
 
-        readSensor();
+        ReadSensors();
         // FINISH
         if (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0) {
           Stop();
@@ -421,7 +420,7 @@ void PID_program()
     }
    
 }
-void Error(int *error) {
+void Error(float *error) {
   for(int i=0; i<=4; i++) 
     {
       if(sensor[i]==1) {
@@ -434,4 +433,3 @@ void Error(int *error) {
     *error = (avgSensor - 3);
     activeSensor = 0; totalSensor = 0;
 }
-
