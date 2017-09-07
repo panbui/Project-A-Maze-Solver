@@ -1,0 +1,42 @@
+LỜI NÓI ĐẦU
+      SHORTEST PATH NÀY KHÔNG PHẢI REQUIREMENT CỦA JAIDEEP, ỔNG CHO PHẦN NÀY LÀM OPTIONAL RÒI ĐỨA NÀO MUỐN LÀM THÌ LÀM KHÔNG LÀM THÌ
+      ỔNG CHỈ CHẤM PHẦN GIẢI MAZE THÔI. CHO NÊN NẾU ĐÃ GIẢI MAZE NGON LÀNH RÒI, GẮN CÁI NÀY VÀO MÀ BỊ CONFLICT HAY CỦA NỢ GÌ ĐẤY, MÀ
+      MỌI NGƯỜI MỆT QUÁ ĐUỐI QUÁ RÒI THÌ THOI MỌI NGƯỜI NÊN BỎ QUA PHẦN NÀY ĐI NHA !! :D
+
+Trong main.ino có 6 phần
+
+1. Variables
+      Chòi dễ lắm, quét khối hết 4 cái var đó ha, ròi CTRL C sau đó CTRL V vô đống variables bên file mấy anh á :)
+      
+2. AddOpt()
+      Cũng y chang ở trên kia ha :) Để đâu cũng được ha (nên để gần RunCase() cho dễ track)
+      Nếu xài code có function này thì có hơi khác 1 chút nên sửa theo đi
+      Còn nếu xài code không có function này thì quay lại RunCase(), thay 2 dòng sau:
+          option[index] = 'R' hoặc 'L' hoặc 'S' hoặc cái quần quề gì đấy;
+          index ++;
+      bằng dòng dưới đây:
+          AddOpt('R' hoặc 'L' hoặc 'S' hoặc cái quần quề gì đấy);
+      
+3. Optimise()
+      Nên để gần AddOpt cho dễ track
+      Xem cmt trong code và đối chiếu với hình em send anh Nam để hiểu rõ hơn :v
+      chứ kêu em viết chi tiết ra hết thì còn dễ ngu hơn nữa á :v
+      
+4. SecondRun()
+      Phần điều kiện chạy option mấy anh đổi sao cho hợp với cái đang xài là được,
+      căn bản là gặp ngã rẽ thì lấy character trong option array ra để đi
+      Còn nó chạy thế nào thì cũng giống RunCase() thoi, có điều không còn dead end nữa
+      
+5. void loop()
+      Ban đầu boolean "finish" và "memorised" bằng false, tức là chưa giải maze xong cũng chưa nhớ được maze.
+        => cho RunCase()
+      Khi RunCase() trigger cho "finish" bằng true trong cái case 'F' của nó, tức là đã giải maze xong, không cần RunCase nữa.
+      
+      Nhưng chưa xong phần nhớ maze làm shortest path cho nên "memorised" vẫn là false
+      Mà lúc này index đang ở 1 con số nào đó ở đằng cuối array, nên phải reset nó lại để quay trở về 0, đầu array
+        => reset index về 0 và trigger "memorised" bằng true, nói rằng tui đã giải maze xong và đã có shortest path ròi
+      Nhưng lúc này con thỏ vẫn còn đang trong cái khung Finish bự, phải lôi nó ra ngoài
+        => cho nó chạy thẳng lên thêm tí nữa cho gặp line để chạy lần 2
+        
+      Khi đã giải maze xong, đã có shortest path thì chạy lần 2 thoi
+        => chạy SecondRun()
