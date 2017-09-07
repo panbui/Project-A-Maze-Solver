@@ -86,7 +86,7 @@ void TurnRight (){
 }
 //========================
 
-//=====READ SENSORS AND ASSIGN VALUE TO SENSOR ARRAY
+//=====READ SENSORS AND ASSIGN VALUE TO SENSOR ARRAY=====
 void ReadSensors (){
   // Sensor 0
     if (PINC & (1<<0)){
