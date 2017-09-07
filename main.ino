@@ -4,6 +4,7 @@ bool memorised = false;
 char option[50];
 int index = 0;
 
+  // CỨ MỖI LẦN ADD VÀO ARRAY SẼ CHẠY OPTIMISE
 void AddOpt(char opt) {
   option[index] = opt;
   Optimise();
@@ -11,37 +12,43 @@ void AddOpt(char opt) {
 }
 
 void Optimise() {
+  // CHỈ CHẠY OPTIMISE KHI ARRAY CÓ ÍT NHẤT 3 ELEMENT
+  // VÀ ELEMENT KẾ CUỐI LÀ U TURN
   if (index >= 2 && option[index - 1] == 'U') {
+    // TỚI ĐÂY THÌ XÉT ELEMENT LIỀN TRƯỚC U TURN
     switch (option[index - 2]) {
       case 'L':
-        // L-U-L => S
+        // L-U-L => S _ TRÁI -> QUAY ĐẦU -> TRÁI THÌ THÀNH THẲNG
         if (option[index] == 'L') {
           option[index - 2] = 'S';
         }
-        // L-U-S => R
+        // L-U-S => R _ TRÁI -> QUAY ĐẦU -> THẲNG THÌ THÀNH QUẸO PHẢI
         else if (option[index] == 'S') {
           option[index - 2] = 'R';
         }
         break;
 
       case 'S':
-        // S-U-L => R
+        // S-U-L => R _ THẲNG -> QUAY ĐẦU -> TRÁI THÌ THÀNH QUẸO PHẢI
         if (option[index] == 'L') {
           option[index - 2] = 'R';
         }
         break;
 
       case 'R':
-        // R-U-L => U
+        // R-U-L => U _ PHẢI -> QUAY ĐẦU -> TRÁI THÌ THÀNH U TURN
         if (option[index] == 'L') {
           option[index - 2] = 'U';
         }
         break;
     }
+    // TỪ 3 ELEMENT RÚT XUỐNG CÒN 1 NÊN INDEX TRỪ ĐI 2 ĐỂ TIẾP TỤC
     index -= 2;
+    // VỪA XEM HÌNH VỪA DÒ THEO CÁI ALGORITHM NÀY SẼ HIỂU :)
   }
 }
 
+// CỨ MỖI LẦN GẶP NGÃ RẼ SẼ APPEND VÔ ARRAY PATH OPTION TRÊN
 void RunCase (){
    SensorsCondition ();
    switch (Case){
@@ -164,6 +171,7 @@ void setup() {
 void SecondRun() {
   ReadSensors();
   // CHOOSE FROM OPTION ARRAY WHEN ENCOUNTERING INTERSECTION
+  // NẾU ĐIỀU KIỆN KHÁC THÌ ĐỔI LẠI, NÓI CHUNG TỚI NGÃ RẼ THÌ SẼ TRIGGER NÓ CHẠY
   if (!((sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0) 
      || (sensor[0]==0 && sensor[1]==0 && sensor[2]==0 && sensor[3]==1 && sensor[4]==0)
      || (sensor[0]==0 && sensor[1]==0 && sensor[2]==1 && sensor[3]==1 && sensor[4]==0)
@@ -172,39 +180,43 @@ void SecondRun() {
      || (sensor[0]==0 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
      || (sensor[0]==0 && sensor[1]==1 && sensor[2]==1 && sensor[3]==0 && sensor[4]==0)
      || (sensor[0]==1 && sensor[1]==1 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0)
-     || (sensor[0]==1 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0))) { // or whatever conditions that indicates intersection
+     || (sensor[0]==1 && sensor[1]==0 && sensor[2]==0 && sensor[3]==0 && sensor[4]==0))) {
     switch (option[index]) {
+      // GẶP F THÌ DỪNG HẲN LUÔN VÌ F NÓ Ở CUỐI CÙNG
       case 'F':
         Stop();
         break;
-
+      
+      // GẶP L THÌ QUẸO TRÁI
       case 'L':
         // TURN LEFT
         break;
-
+      
+      // GẶP R THÌ QUẸO PHẢI
       case 'R':
         // TURN RIGHT
         break;
 
+      // GẶP S THÌ ĐI THẲNG
       case 'S':
         // GO STRAIGHT
         break;
     }
-    // GO TO NEXT OPTION
+    // GO TO NEXT OPTION - CỘNG LÊN ĐỂ NÓ QUA ELEMENT KẾ TIẾP
     index ++;
   }
 }
 
 void loop() {
   // FIRST RUN - EXPLORE THE MAZE
-  if (finish == false) {
+  if (finish == false) { // BOOLEAN finish ĐƯỢC TRIGGLE true TRONG TRƯỜNG HỢP FINISH TRONG RUNCASE()
     RunCase ();
   }
   // FIND THE OPTIMAL PATH
-  else if (memorised == false) {
+  else if (memorised == false) {  // CÓ CÁI FLAG memorised ĐỂ MẤY DÒNG DƯỚI CHỈ CHẠY 1 LẦN
     index = 0;
     delay_ms(5000);
-    // MOVE OUT OF FINISH BOX
+    // MOVE OUT OF FINISH BOX - CHO NÓ CHẠY RA KHỎI CÁI BOX FINISH ĐÃ
     setPWM_leftmotor (200);
     setPWM_rightmotor (200);
     Forward();
